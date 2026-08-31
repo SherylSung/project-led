@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4F1EC">
+<title>Project LED · Sheryl Sung</title>
+<style>
+:root{
+  --linen:#F4F1EC;
+  --paper:#FCFAF7;
+  --sage:#98A897;
+  --sage-deep:#657A69;
+  --sage-soft:#DDE5DC;
+  --milk:#E7DDD3;
+  --rose:#D6B5B1;
+  --ink:#3E3A36;
+  --muted:#7E7770;
+  --line:#DED8D0;
+  --shadow:0 24px 70px rgba(85,75,65,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--linen);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif}
+body{min-height:100vh}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 20px 50px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:34px}
+.brand{font-weight:850;letter-spacing:.03em}
+.teacher{font-size:14px;color:var(--muted)}
+.hero{
+  background:linear-gradient(145deg,rgba(252,250,247,.94),rgba(247,243,236,.92));
+  border:1px solid rgba(255,255,255,.85);
+  border-radius:42px;
+  box-shadow:var(--shadow);
+  padding:48px;
+  position:relative;
+  overflow:hidden;
+}
+.hero:before,.hero:after{
+  content:"";position:absolute;border-radius:50%;background:rgba(152,168,151,.12)
+}
+.hero:before{width:280px;height:280px;right:-90px;top:-110px}
+.hero:after{width:190px;height:190px;left:-80px;bottom:-110px}
+.kicker{font-size:13px;font-weight:900;color:var(--sage-deep);letter-spacing:.16em;text-transform:uppercase}
+h1{font-size:clamp(52px,8vw,92px);line-height:.94;letter-spacing:-.05em;margin:16px 0 18px;max-width:820px}
+.sub{font-size:21px;line-height:1.55;color:#5f5953;max-width:730px}
+.motto{margin-top:20px;font-size:14px;color:var(--muted)}
+.missions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:24px;
+  min-height:250px;display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 12px 35px rgba(85,75,65,.06)
+}
+.card.active{border-color:#B8C7B6;background:linear-gradient(160deg,#FCFAF7,#EFF4EE)}
+.num{font-size:12px;font-weight:900;letter-spacing:.14em;color:var(--sage-deep)}
+.card h2{font-size:30px;line-height:1.05;margin:10px 0}
+.card p{color:var(--muted);line-height:1.55;margin:0}
+.status{margin-top:18px;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:850}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--sage-deep)}
+.lock{opacity:.55}
+.btn{
+  display:inline-block;margin-top:20px;text-decoration:none;background:var(--sage-deep);color:#fff;
+  padding:14px 20px;border-radius:999px;font-weight:850;text-align:center;
+  box-shadow:0 8px 22px rgba(101,122,105,.22)
+}
+.disabled{
+  display:inline-block;margin-top:20px;padding:14px 20px;border-radius:999px;font-weight:800;
+  text-align:center;background:#ECE7E1;color:#958D85
+}
+.footer{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-top:28px;color:var(--muted);font-size:12px}
+.sig{font-size:17px;font-style:italic;color:var(--ink)}
+@media(max-width:850px){
+  .hero{padding:34px 28px}
+  .missions{grid-template-columns:1fr}
+  .card{min-height:210px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">PROJECT LED</div>
+    <div class="teacher">Sheryl Sung · Digital Classroom</div>
+  </div>
+
+  <section class="hero">
+    <div class="kicker">Learners · Explorers · Doers</div>
+    <h1>Welcome to Project LED.</h1>
+    <div class="sub">Small missions. Real-life choices. Learn, explore, and do something that matters.</div>
+    <div class="motto">Guide the Students to become LEDs – Learners, Explorers, and Doers.</div>
+  </section>
+
+  <section class="missions">
+    <article class="card active">
+      <div>
+        <div class="num">MISSION 01</div>
+        <h2>Who Does It?</h2>
+        <p>Look at the tasks in your home and discover how your family works together.</p>
+        <div class="status"><span class="dot"></span> OPEN TODAY</div>
+      </div>
+      <a class="btn" href="mission01/index.html">Begin Today’s Mission</a>
+    </article>
+
+    <article class="card lock">
+      <div>
+        <div class="num">MISSION 02</div>
+        <h2>Family Resources</h2>
+        <p>Discover the resources around you and learn how to use them wisely.</p>
+        <div class="status">COMING SOON</div>
+      </div>
+      <div class="disabled">Locked</div>
+    </article>
+
+    <article class="card lock">
+      <div>
+        <div class="num">MISSION 03</div>
+        <h2>My Happy Donut</h2>
+        <p>Turn a little piece of happiness into something you make with your own hands.</p>
+        <div class="status">COMING SOON</div>
+      </div>
+      <div class="disabled">Locked</div>
+    </article>
+  </section>
+
+  <div class="footer">
+    <div>Shared iPad friendly · Start from this page each time.</div>
+    <div class="sig">Sheryl Sung</div>
+  </div>
+</div>
+</body>
+</html>
