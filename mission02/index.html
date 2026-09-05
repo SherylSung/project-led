@@ -1,1 +1,241 @@
-placeholder
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Project LED · Mission 02 · Build the Resource Map</title>
+<style>
+:root{
+  --ink:#2f3b35; --muted:#68756e; --cream:#f7f1e7; --paper:#fffdf8;
+  --sage:#b9c9b8; --sage2:#dfe8dc; --green:#506b5d; --gold:#d8b66a;
+  --rose:#ead8d2; --blue:#dce7ea; --line:#d9ddd6; --shadow:0 12px 34px rgba(55,65,58,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;color:var(--ink);background:
+radial-gradient(circle at 10% 10%,rgba(185,201,184,.28),transparent 26%),
+radial-gradient(circle at 90% 90%,rgba(216,182,106,.15),transparent 28%),var(--cream)}
+button{font:inherit}
+.app{max-width:980px;margin:auto;padding:20px 18px 32px}
+.brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:var(--green);font-size:12px;font-weight:800;letter-spacing:.13em}
+.brand b{display:flex;gap:8px;align-items:center}.dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:white}
+.screen{display:none}.screen.active{display:block}
+.panel{background:rgba(255,253,248,.94);border:1px solid rgba(80,107,93,.12);border-radius:28px;box-shadow:var(--shadow);padding:28px}
+.kicker{font-size:12px;font-weight:900;letter-spacing:.16em;color:var(--green)}
+h1{font-family:Georgia,serif;font-size:clamp(34px,6vw,58px);line-height:.98;margin:8px 0 12px}
+h2{font-family:Georgia,serif;font-size:clamp(28px,5vw,44px);margin:6px 0 10px}
+.lead{font-size:18px;line-height:1.55;color:var(--muted);max-width:720px}
+.quote{margin:24px 0;padding:18px 20px;border-left:4px solid var(--gold);background:#fbf5e8;border-radius:0 18px 18px 0;font-family:Georgia,serif;font-size:19px;line-height:1.5}
+.primary{border:0;background:var(--green);color:white;border-radius:999px;padding:13px 22px;font-weight:800;box-shadow:0 8px 18px rgba(80,107,93,.22)}
+.primary:active,.choice:active,.bucket:active,.resource:active{transform:scale(.98)}
+.center{text-align:center}
+.family{display:inline-block;margin:14px auto 20px;padding:12px 22px;border:2px solid var(--green);border-radius:18px;font-weight:900;letter-spacing:.08em;background:white}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bucket{min-height:150px;border:2px dashed #aebcb1;border-radius:24px;background:#f7faf5;padding:18px;text-align:center;cursor:pointer;transition:.2s}
+.bucket.selected{border-style:solid;border-color:var(--gold);box-shadow:0 0 0 4px rgba(216,182,106,.15)}
+.bucket h3{margin:5px 0;font-size:21px}.bucket p{margin:0;color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.choice,.resource{border:1px solid var(--line);background:white;border-radius:18px;padding:14px 10px;font-weight:800;cursor:pointer;min-height:64px;box-shadow:0 5px 12px rgba(55,65,58,.06);transition:.18s}
+.choice.selected,.resource.selected{outline:3px solid var(--gold);background:#fff9e9}
+.choice.done,.resource.done{opacity:.28;pointer-events:none}
+.hint{height:26px;margin:12px 0 2px;color:#9a6a3b;font-weight:750;text-align:center}
+.map{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.side{border-radius:24px;padding:14px;background:#f7faf5;border:1px solid var(--line)}
+.side-title{text-align:center;font-weight:900;font-size:18px;margin-bottom:10px}
+.category{background:white;border-radius:18px;padding:12px;margin-top:10px;border:1px solid var(--line);min-height:118px}
+.category h4{margin:0 0 8px;color:var(--green);font-size:16px}
+.slot-items{display:flex;flex-wrap:wrap;gap:7px}
+.pill{padding:7px 9px;border-radius:999px;background:var(--sage2);font-size:12px;font-weight:750}
+.resource-bank{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:15px}
+.resource{font-size:13px;min-height:58px}
+.progress{font-size:12px;color:var(--muted);font-weight:800;text-align:right;margin-top:8px}
+.reveal{animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.97);opacity:.3}to{transform:scale(1);opacity:1}}
+.big-question{font-family:Georgia,serif;font-size:clamp(28px,5vw,46px);line-height:1.12;margin:16px auto 24px;max-width:700px}
+.icons{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:22px 0}
+.icon-card{width:118px;padding:16px 8px;border-radius:20px;background:white;border:1px solid var(--line);font-weight:850}
+.icon-card span{display:block;font-size:31px;margin-bottom:5px}
+.yesno{display:flex;justify-content:center;gap:14px}
+.yesno button{min-width:120px}
+.final{padding:28px;background:linear-gradient(135deg,#eef4eb,#fff8e9);border-radius:24px;margin-top:20px}
+.final strong{font-family:Georgia,serif;font-size:34px;color:var(--green)}
+.signature{text-align:right;margin-top:22px;color:#52665b;font-family:"Snell Roundhand","Segoe Script",cursive;font-size:20px}
+.small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+@media(max-width:720px){
+ .app{padding:10px}.panel{padding:20px 14px;border-radius:22px}
+ .cards,.resource-bank{grid-template-columns:1fr 1fr}
+ .two,.map{gap:8px}
+ .bucket{min-height:135px;padding:12px 8px}
+ .side{padding:9px}.category{padding:9px;min-height:110px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand"><b><span class="dot">LED</span> PROJECT LED · HOME ECONOMICS LAB</b><span>MISSION 02</span></div>
+
+  <section class="screen active" id="s1"><div class="panel">
+    <div class="kicker">MISSION 02 · USE IT WISELY</div>
+    <h1>Build the Resource Map</h1>
+    <p class="lead">You’ve met the resources.<br><b>Now let’s see how they fit together.</b></p>
+    <div class="quote">Being fast is good. Being accurate is better.<br><b>Wise resource users need both.</b></div>
+    <button class="primary" onclick="go(2)">Build My Map →</button>
+    <div class="signature">Sheryl Sung</div>
+  </div></section>
+
+  <section class="screen" id="s2"><div class="panel">
+    <div class="kicker">STEP 1 · SEE THE STRUCTURE</div>
+    <h2>Where do they belong?</h2>
+    <p class="lead">Tap a resource type, then choose where it belongs.</p>
+    <div class="center"><div class="family">FAMILY RESOURCES</div></div>
+    <div class="two">
+      <div class="bucket" data-side="inside" onclick="placeType('inside')"><div style="font-size:30px">🏠</div><h3>INSIDE THE FAMILY</h3><p>Resources the family has or provides</p><div id="insideTypes" class="slot-items" style="justify-content:center;margin-top:12px"></div></div>
+      <div class="bucket" data-side="outside" onclick="placeType('outside')"><div style="font-size:30px">🌏</div><h3>OUTSIDE THE FAMILY</h3><p>Resources the family can use from outside</p><div id="outsideTypes" class="slot-items" style="justify-content:center;margin-top:12px"></div></div>
+    </div>
+    <div class="cards" id="typeCards"></div>
+    <div class="hint" id="typeHint"></div>
+    <div class="center"><button class="primary" id="toMap" style="display:none" onclick="go(3)">Build the Full Map →</button></div>
+  </div></section>
+
+  <section class="screen" id="s3"><div class="panel">
+    <div class="kicker">STEP 2 · BUILD YOUR MAP</div>
+    <h2>Family Resource Map</h2>
+    <p class="lead">Tap a resource, then tap the category where it belongs.</p>
+    <div class="map">
+      <div class="side"><div class="side-title">🏠 INSIDE THE FAMILY</div>
+        <div class="category" data-cat="human" onclick="placeResource('human')"><h4>👤 Human Resources</h4><div class="slot-items" id="humanItems"></div></div>
+        <div class="category" data-cat="material" onclick="placeResource('material')"><h4>📦 Material Resources</h4><div class="slot-items" id="materialItems"></div></div>
+      </div>
+      <div class="side"><div class="side-title">🌏 OUTSIDE THE FAMILY</div>
+        <div class="category" data-cat="social" onclick="placeResource('social')"><h4>🤝 Social Resources</h4><div class="slot-items" id="socialItems"></div></div>
+        <div class="category" data-cat="natural" onclick="placeResource('natural')"><h4>🌿 Natural Resources</h4><div class="slot-items" id="naturalItems"></div></div>
+      </div>
+    </div>
+    <div class="resource-bank" id="resourceBank"></div>
+    <div class="hint" id="resourceHint"></div>
+    <div class="progress" id="progress">0 / 12 placed</div>
+    <div class="center"><button class="primary" id="finishMap" style="display:none" onclick="go(4)">See My Resource Map →</button></div>
+  </div></section>
+
+  <section class="screen" id="s4"><div class="panel">
+    <div class="kicker">YOUR FAMILY RESOURCE MAP</div>
+    <h2>You built the whole picture.</h2>
+    <div class="map reveal">
+      <div class="side"><div class="side-title">🏠 INSIDE THE FAMILY</div>
+        <div class="category"><h4>👤 Human Resources</h4><div class="slot-items"><span class="pill">⏰ Time</span><span class="pill">🧠 Knowledge</span><span class="pill">⚡ Your Energy（精力）</span></div></div>
+        <div class="category"><h4>📦 Material Resources</h4><div class="slot-items"><span class="pill">💰 Money</span><span class="pill">🚗 Family Car</span><span class="pill">📱 Smartphone</span></div></div>
+      </div>
+      <div class="side"><div class="side-title">🌏 OUTSIDE THE FAMILY</div>
+        <div class="category"><h4>🤝 Social Resources</h4><div class="slot-items"><span class="pill">📚 Public Library</span><span class="pill">🏥 全民健保</span><span class="pill">🤝 社會福利</span></div></div>
+        <div class="category"><h4>🌿 Natural Resources</h4><div class="slot-items"><span class="pill">🌬️ Air</span><span class="pill">☀️ Sunlight</span><span class="pill">💧 Water</span></div></div>
+      </div>
+    </div>
+    <div class="quote">A family uses many kinds of resources every day.</div>
+    <div class="center"><button class="primary" onclick="go(5)">One More Question →</button></div>
+  </div></section>
+
+  <section class="screen" id="s5"><div class="panel center">
+    <div class="kicker">STEP 3 · THINK ABOUT LIMITS</div>
+    <div class="big-question">Can your family have unlimited…</div>
+    <div class="icons">
+      <div class="icon-card"><span>⏰</span>TIME?</div>
+      <div class="icon-card"><span>💰</span>MONEY?</div>
+      <div class="icon-card"><span>⚡</span>ENERGY?</div>
+      <div class="icon-card"><span>💧</span>WATER?</div>
+    </div>
+    <div class="yesno">
+      <button class="primary" style="background:#9b7f70" onclick="answerLimit(true)">YES</button>
+      <button class="primary" onclick="answerLimit(false)">NO</button>
+    </div>
+    <div class="hint" id="limitHint"></div>
+    <div id="limitedReveal" class="final reveal" style="display:none">
+      <strong>Resources are limited.</strong>
+      <p>We cannot have or use everything without limits.</p>
+      <p style="font-size:20px;font-weight:850">So what happens when we don’t use our resources wisely?</p>
+      <button class="primary" onclick="go(6)">Find Out →</button>
+    </div>
+  </div></section>
+
+  <section class="screen" id="s6"><div class="panel">
+    <div class="kicker">MISSION 02 · NEXT</div>
+    <h1>Choices have consequences.</h1>
+    <p class="lead">Next, we’ll look at what happens when one person’s use of <b>time</b> and <b>energy</b> affects other people too.</p>
+    <div class="quote">Your resources matter. Other people’s resources matter, too.</div>
+    <div class="signature">Sheryl Sung</div>
+  </div></section>
+</div>
+
+<script>
+const types=[
+ {id:'human',label:'👤 Human Resources',side:'inside'},
+ {id:'material',label:'📦 Material Resources',side:'inside'},
+ {id:'social',label:'🤝 Social Resources',side:'outside'},
+ {id:'natural',label:'🌿 Natural Resources',side:'outside'}
+];
+const resources = [
+  {id:"time",label:"⏰ Time",cat:"human"},
+  {id:"sunlight",label:"☀️ Sunlight",cat:"natural"},
+  {id:"money",label:"💰 Money",cat:"material"},
+  {id:"health",label:"🏥 全民健保",cat:"social"},
+  {id:"knowledge",label:"🧠 Knowledge",cat:"human"},
+  {id:"water",label:"💧 Water",cat:"natural"},
+  {id:"phone",label:"📱 Smartphone",cat:"material"},
+  {id:"library",label:"📚 Public Library",cat:"social"},
+  {id:"energy",label:"⚡ Your Energy（精力）",cat:"human"},
+  {id:"car",label:"🚗 Family Car",cat:"material"},
+  {id:"welfare",label:"🤝 社會福利",cat:"social"},
+  {id:"air",label:"🌬️ Air",cat:"natural"}
+];
+let selectedType=null, selectedResource=null, typeDone=0, resourceDone=0;
+
+function go(n){
+ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+ document.getElementById('s'+n).classList.add('active');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderTypes(){
+ const box=document.getElementById('typeCards');
+ types.forEach(t=>{
+  const b=document.createElement('button'); b.className='choice'; b.id='type-'+t.id; b.textContent=t.label;
+  b.onclick=(e)=>{e.stopPropagation(); document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected')); selectedType=t; b.classList.add('selected'); document.getElementById('typeHint').textContent='Now choose INSIDE or OUTSIDE.'};
+  box.appendChild(b);
+ });
+}
+function placeType(side){
+ if(!selectedType){document.getElementById('typeHint').textContent='Choose a resource type first.';return}
+ if(selectedType.side!==side){document.getElementById('typeHint').textContent='Not quite. Think about where this resource comes from.';return}
+ const dest=document.getElementById(side+'Types');
+ const p=document.createElement('span');p.className='pill reveal';p.textContent=selectedType.label;dest.appendChild(p);
+ document.getElementById('type-'+selectedType.id).classList.add('done');
+ selectedType=null;typeDone++;
+ document.getElementById('typeHint').textContent=typeDone===4?'Nice! Now you know the structure.':'Good. Keep building.';
+ document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));
+ if(typeDone===4)document.getElementById('toMap').style.display='inline-block';
+}
+function renderResources(){
+ const bank=document.getElementById('resourceBank');
+ resources.forEach(r=>{
+  const b=document.createElement('button');b.className='resource';b.id='res-'+r.id;b.textContent=r.label;
+  b.onclick=(e)=>{e.stopPropagation();document.querySelectorAll('.resource').forEach(x=>x.classList.remove('selected'));selectedResource=r;b.classList.add('selected');document.getElementById('resourceHint').textContent='Now choose its category.'};
+  bank.appendChild(b);
+ });
+}
+function placeResource(cat){
+ if(!selectedResource){document.getElementById('resourceHint').textContent='Choose a resource first.';return}
+ if(selectedResource.cat!==cat){document.getElementById('resourceHint').textContent='Think again.';return}
+ const p=document.createElement('span');p.className='pill reveal';p.textContent=selectedResource.label;
+ document.getElementById(cat+'Items').appendChild(p);
+ document.getElementById('res-'+selectedResource.id).classList.add('done');
+ selectedResource=null;resourceDone++;
+ document.querySelectorAll('.resource').forEach(x=>x.classList.remove('selected'));
+ document.getElementById('resourceHint').textContent=resourceDone===12?'You built the complete map!':'Nice choice.';
+ document.getElementById('progress').textContent=resourceDone+' / 12 placed';
+ if(resourceDone===12)document.getElementById('finishMap').style.display='inline-block';
+}
+function answerLimit(yes){
+ if(yes){document.getElementById('limitHint').textContent='Think about time, money, energy, and water in real life.';return}
+ document.getElementById('limitHint').textContent='';
+ document.getElementById('limitedReveal').style.display='block';
+}
+renderTypes();renderResources();
+</script>
+</body></html>
