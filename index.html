@@ -17,14 +17,16 @@ body{min-height:100vh}
 .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 50px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
 .brand{font-weight:900;letter-spacing:.04em}.teacher{font-size:14px;color:var(--muted)}
-.hero{background:linear-gradient(145deg,rgba(252,250,247,.95),rgba(247,243,236,.93));border:1px solid rgba(255,255,255,.85);border-radius:40px;box-shadow:var(--shadow);padding:42px;position:relative;overflow:hidden}
+.hero{background:linear-gradient(145deg,rgba(252,250,247,.95),rgba(247,243,236,.93));border:1px solid rgba(255,255,255,.85);border-radius:40px;box-shadow:var(--shadow);padding:42px}
 .kicker{font-size:13px;font-weight:900;color:var(--sage-deep);letter-spacing:.16em;text-transform:uppercase}
 h1{font-size:clamp(48px,7vw,82px);line-height:.96;letter-spacing:-.05em;margin:14px 0 16px}
 .sub{font-size:19px;line-height:1.55;color:#5f5953;max-width:760px}
 .class-panel{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:26px;padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .class-panel label{font-weight:850}
 select{appearance:none;-webkit-appearance:none;background:#F7F4EF;border:1px solid var(--line);border-radius:999px;padding:12px 42px 12px 16px;font-size:16px;font-weight:800;color:var(--ink)}
+.show-btn{border:0;background:var(--sage-deep);color:#fff;padding:12px 20px;border-radius:999px;font-size:15px;font-weight:850;cursor:pointer}
 .class-note{font-size:13px;color:var(--muted)}
+.feedback{margin-top:14px;font-size:14px;font-weight:750;color:var(--sage-deep);display:none}
 .missions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:26px}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:24px;min-height:270px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 12px 35px rgba(85,75,65,.06);transition:.2s}
 .card.open{border-color:#B8C7B6;background:linear-gradient(160deg,#FCFAF7,#EFF4EE)}
@@ -36,12 +38,10 @@ select{appearance:none;-webkit-appearance:none;background:#F7F4EF;border:1px sol
 .btn,.disabled{display:block;margin-top:20px;padding:14px 20px;border-radius:999px;font-weight:850;text-align:center;text-decoration:none}
 .btn{background:var(--sage-deep);color:white;box-shadow:0 8px 22px rgba(101,122,105,.22)}
 .disabled{background:var(--locked);color:#918981}
-.choose-msg{margin-top:18px;padding:15px 18px;border-radius:20px;background:#F1EEE8;color:var(--muted);font-size:14px;display:none}
 .footer{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-top:26px;color:var(--muted);font-size:12px}
 .sig{font-size:17px;font-style:italic;color:var(--ink)}
-@media(max-width:850px){.hero{padding:30px 26px}.missions{grid-template-columns:1fr}.card{min-height:210px}.class-panel{align-items:flex-start;flex-direction:column}}
+@media(max-width:850px){.hero{padding:30px 26px}.missions{grid-template-columns:1fr}.card{min-height:210px}.class-panel{align-items:flex-start;flex-direction:column}.show-btn{width:100%}}
 </style>
-<script src="access.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -53,7 +53,7 @@ select{appearance:none;-webkit-appearance:none;background:#F7F4EF;border:1px sol
   <section class="hero">
     <div class="kicker">Learners · Explorers · Doers</div>
     <h1>Choose your class.</h1>
-    <div class="sub">Your class may be working on a different mission today. Choose your class first, then open the missions that are available to you.</div>
+    <div class="sub">Your class may be working on a different mission today. Choose your class, then tap <b>SHOW MY MISSIONS</b>.</div>
 
     <div class="class-panel">
       <label for="classSelect">CLASS</label>
@@ -64,110 +64,100 @@ select{appearance:none;-webkit-appearance:none;background:#F7F4EF;border:1px sol
         <option>809</option><option>810</option><option>811</option><option>812</option>
         <option>813</option><option>814</option>
       </select>
+      <button class="show-btn" id="showBtn">SHOW MY MISSIONS</button>
       <div class="class-note">每個班的進度可能不同，請選自己的班級。</div>
     </div>
-    <div class="choose-msg" id="chooseMsg">Choose your class to see today's missions.</div>
+    <div class="feedback" id="feedback"></div>
   </section>
 
   <section class="missions">
     <article class="card locked" id="card-m1">
-      <div>
-        <div class="num">MISSION 01</div>
-        <h2>Who Does It?</h2>
-        <p>Look at the tasks in your home and discover how your family works together.</p>
-        <div class="status" id="status-m1">CHOOSE YOUR CLASS</div>
-      </div>
+      <div><div class="num">MISSION 01</div><h2>Who Does It?</h2>
+      <p>Look at the tasks in your home and discover how your family works together.</p>
+      <div class="status" id="status-m1">CHOOSE YOUR CLASS</div></div>
       <div id="action-m1" class="disabled">Locked</div>
     </article>
 
     <article class="card locked" id="card-m2">
-      <div>
-        <div class="num">MISSION 02</div>
-        <h2>Family Resources</h2>
-        <p>Discover Human, Material, Social, and Natural Resources and build your Family Resource Map.</p>
-        <div class="status" id="status-m2">CHOOSE YOUR CLASS</div>
-      </div>
+      <div><div class="num">MISSION 02</div><h2>Family Resources</h2>
+      <p>Discover Human, Material, Social, and Natural Resources and build your Family Resource Map.</p>
+      <div class="status" id="status-m2">CHOOSE YOUR CLASS</div></div>
       <div id="action-m2" class="disabled">Locked</div>
     </article>
 
     <article class="card locked" id="card-m3">
-      <div>
-        <div class="num">MISSION 03</div>
-        <h2>My Little Persimmon Pouch</h2>
-        <p>Use basic stitches to make a useful drawstring persimmon pouch.</p>
-        <div class="status" id="status-m3">CHOOSE YOUR CLASS</div>
-      </div>
+      <div><div class="num">MISSION 03</div><h2>My Little Persimmon Pouch</h2>
+      <p>Use basic stitches to make a useful drawstring persimmon pouch.</p>
+      <div class="status" id="status-m3">CHOOSE YOUR CLASS</div></div>
       <div id="action-m3" class="disabled">Locked</div>
     </article>
   </section>
 
-  <div class="footer">
-    <div>One QR code · Different class progress</div>
-    <div class="sig">Sheryl Sung</div>
-  </div>
+  <div class="footer"><div>One QR code · Different class progress</div><div class="sig">Sheryl Sung</div></div>
 </div>
 
 <script>
-const missionInfo = {
-  m1:{href:"mission01/index.html", label:"Begin Mission 01"},
-  m2:{href:"mission02/index.html", label:"Begin Mission 02"},
-  m3:{href:"#", label:"Begin Mission 03"}
+const missionInfo={
+  m1:{href:"mission01/index.html",label:"Begin Mission 01"},
+  m2:{href:"mission02/index.html",label:"Begin Mission 02"},
+  m3:{href:"#",label:"Begin Mission 03"}
 };
+let ACCESS={};
 
-function setMission(id, isOpen){
+function renderMission(id,isOpen){
   const card=document.getElementById("card-"+id);
   const status=document.getElementById("status-"+id);
-  const action=document.getElementById("action-"+id);
-
-  card.classList.toggle("open", isOpen);
-  card.classList.toggle("locked", !isOpen);
-
+  const old=document.getElementById("action-"+id);
+  card.classList.toggle("open",isOpen);
+  card.classList.toggle("locked",!isOpen);
   if(isOpen){
     status.innerHTML='<span class="dot"></span> OPEN FOR YOUR CLASS';
     const a=document.createElement("a");
-    a.className="btn";
-    a.textContent=missionInfo[id].label;
+    a.className="btn"; a.id="action-"+id; a.textContent=missionInfo[id].label;
     a.href=missionInfo[id].href;
     if(id==="m3"){
-      a.href="#";
-      a.onclick=(e)=>{e.preventDefault(); alert("Mission 03 webpage is not online yet.");};
+      a.onclick=(e)=>{e.preventDefault();alert("Mission 03 webpage is not online yet.");};
     }
-    action.replaceWith(a);
-    a.id="action-"+id;
+    old.replaceWith(a);
   }else{
+    status.textContent="LOCKED FOR YOUR CLASS";
     const d=document.createElement("div");
     d.className="disabled"; d.id="action-"+id; d.textContent="Locked";
-    action.replaceWith(d);
-    status.textContent="LOCKED FOR YOUR CLASS";
+    old.replaceWith(d);
   }
 }
 
-function resetMissions(){
-  ["m1","m2","m3"].forEach(id=>{
-    const card=document.getElementById("card-"+id);
-    const status=document.getElementById("status-"+id);
-    const action=document.getElementById("action-"+id);
-    card.classList.remove("open"); card.classList.add("locked");
-    status.textContent="CHOOSE YOUR CLASS";
-    const d=document.createElement("div");
-    d.className="disabled"; d.id="action-"+id; d.textContent="Locked";
-    action.replaceWith(d);
-  });
+async function loadAccess(){
+  try{
+    const r=await fetch("access.json?t="+Date.now(),{cache:"no-store"});
+    ACCESS=await r.json();
+  }catch(err){
+    console.error(err);
+    document.getElementById("feedback").style.display="block";
+    document.getElementById("feedback").textContent="Could not load class settings. Please refresh.";
+  }
 }
+loadAccess();
 
-document.getElementById("classSelect").addEventListener("change", e=>{
-  const cls=e.target.value;
-  const msg=document.getElementById("chooseMsg");
+document.getElementById("showBtn").addEventListener("click",async()=>{
+  const cls=document.getElementById("classSelect").value;
+  const feedback=document.getElementById("feedback");
   if(!cls){
-    resetMissions();
-    msg.style.display="block";
+    feedback.style.display="block";
+    feedback.textContent="Please choose your class first.";
     return;
   }
-  msg.style.display="none";
-  const cfg=(window.PROJECT_LED_ACCESS||{})[cls] || {m1:false,m2:false,m3:false};
-  setMission("m1",!!cfg.m1);
-  setMission("m2",!!cfg.m2);
-  setMission("m3",!!cfg.m3);
+  // Reload settings every time, bypassing Safari/GitHub cache.
+  try{
+    const r=await fetch("access.json?t="+Date.now(),{cache:"no-store"});
+    ACCESS=await r.json();
+  }catch(e){}
+  const cfg=ACCESS[cls]||{m1:false,m2:false,m3:false};
+  renderMission("m1",!!cfg.m1);
+  renderMission("m2",!!cfg.m2);
+  renderMission("m3",!!cfg.m3);
+  feedback.style.display="block";
+  feedback.textContent="Class "+cls+" · Your missions are ready.";
 });
 </script>
 </body>
