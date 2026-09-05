@@ -27,6 +27,7 @@ select{appearance:none;-webkit-appearance:none;background:#F7F4EF;border:1px sol
 .show-btn{border:0;background:var(--sage-deep);color:#fff;padding:12px 20px;border-radius:999px;font-size:15px;font-weight:850;cursor:pointer}
 .class-note{font-size:13px;color:var(--muted)}
 .feedback{margin-top:14px;font-size:14px;font-weight:750;color:var(--sage-deep);display:none}
+.feedback.error{color:#9A5D57}
 .missions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:26px}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:30px;padding:24px;min-height:270px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 12px 35px rgba(85,75,65,.06);transition:.2s}
 .card.open{border-color:#B8C7B6;background:linear-gradient(160deg,#FCFAF7,#EFF4EE)}
@@ -45,10 +46,7 @@ select{appearance:none;-webkit-appearance:none;background:#F7F4EF;border:1px sol
 </head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <div class="brand">PROJECT LED</div>
-    <div class="teacher">Sheryl Sung · Digital Classroom</div>
-  </div>
+  <div class="top"><div class="brand">PROJECT LED</div><div class="teacher">Sheryl Sung · Digital Classroom</div></div>
 
   <section class="hero">
     <div class="kicker">Learners · Explorers · Doers</div>
@@ -59,10 +57,10 @@ select{appearance:none;-webkit-appearance:none;background:#F7F4EF;border:1px sol
       <label for="classSelect">CLASS</label>
       <select id="classSelect">
         <option value="">Choose your class</option>
-        <option>801</option><option>802</option><option>803</option><option>804</option>
-        <option>805</option><option>806</option><option>807</option><option>808</option>
-        <option>809</option><option>810</option><option>811</option><option>812</option>
-        <option>813</option><option>814</option>
+        <option value="801">801</option><option value="802">802</option><option value="803">803</option><option value="804">804</option>
+        <option value="805">805</option><option value="806">806</option><option value="807">807</option><option value="808">808</option>
+        <option value="809">809</option><option value="810">810</option><option value="811">811</option><option value="812">812</option>
+        <option value="813">813</option><option value="814">814</option>
       </select>
       <button class="show-btn" id="showBtn">SHOW MY MISSIONS</button>
       <div class="class-note">每個班的進度可能不同，請選自己的班級。</div>
@@ -102,14 +100,15 @@ const missionInfo={
   m2:{href:"mission02/index.html",label:"Begin Mission 02"},
   m3:{href:"#",label:"Begin Mission 03"}
 };
-let ACCESS={};
 
 function renderMission(id,isOpen){
   const card=document.getElementById("card-"+id);
   const status=document.getElementById("status-"+id);
   const old=document.getElementById("action-"+id);
+
   card.classList.toggle("open",isOpen);
   card.classList.toggle("locked",!isOpen);
+
   if(isOpen){
     status.innerHTML='<span class="dot"></span> OPEN FOR YOUR CLASS';
     const a=document.createElement("a");
@@ -127,37 +126,58 @@ function renderMission(id,isOpen){
   }
 }
 
-async function loadAccess(){
-  try{
-    const r=await fetch("access.json?t="+Date.now(),{cache:"no-store"});
-    ACCESS=await r.json();
-  }catch(err){
-    console.error(err);
-    document.getElementById("feedback").style.display="block";
-    document.getElementById("feedback").textContent="Could not load class settings. Please refresh.";
-  }
+function loadFreshAccess(){
+  return new Promise((resolve,reject)=>{
+    try{
+      delete window.PROJECT_LED_ACCESS;
+      const old=document.getElementById("dynamic-access");
+      if(old) old.remove();
+
+      const s=document.createElement("script");
+      s.id="dynamic-access";
+      s.src="access.js?t="+Date.now();
+      s.onload=()=>{
+        if(window.PROJECT_LED_ACCESS) resolve(window.PROJECT_LED_ACCESS);
+        else reject(new Error("Settings loaded but PROJECT_LED_ACCESS is missing."));
+      };
+      s.onerror=()=>reject(new Error("Could not load access.js"));
+      document.head.appendChild(s);
+    }catch(e){ reject(e); }
+  });
 }
-loadAccess();
 
 document.getElementById("showBtn").addEventListener("click",async()=>{
-  const cls=document.getElementById("classSelect").value;
+  const cls=document.getElementById("classSelect").value.trim();
   const feedback=document.getElementById("feedback");
+  feedback.classList.remove("error");
+
   if(!cls){
     feedback.style.display="block";
     feedback.textContent="Please choose your class first.";
     return;
   }
-  // Reload settings every time, bypassing Safari/GitHub cache.
-  try{
-    const r=await fetch("access.json?t="+Date.now(),{cache:"no-store"});
-    ACCESS=await r.json();
-  }catch(e){}
-  const cfg=ACCESS[cls]||{m1:false,m2:false,m3:false};
-  renderMission("m1",!!cfg.m1);
-  renderMission("m2",!!cfg.m2);
-  renderMission("m3",!!cfg.m3);
+
   feedback.style.display="block";
-  feedback.textContent="Class "+cls+" · Your missions are ready.";
+  feedback.textContent="Checking Class "+cls+"…";
+
+  try{
+    const access=await loadFreshAccess();
+    const cfg=access[cls];
+
+    if(!cfg){
+      throw new Error("No setting found for Class "+cls);
+    }
+
+    renderMission("m1",cfg.m1 === true);
+    renderMission("m2",cfg.m2 === true);
+    renderMission("m3",cfg.m3 === true);
+
+    feedback.textContent="Class "+cls+" · Your missions are ready.";
+  }catch(err){
+    console.error(err);
+    feedback.classList.add("error");
+    feedback.textContent="Class settings could not be loaded. Please refresh and try again.";
+  }
 });
 </script>
 </body>
