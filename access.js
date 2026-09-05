@@ -1,0 +1,20 @@
+// PROJECT LED — CLASS ACCESS SETTINGS
+// true = OPEN   false = LOCKED
+// Edit only true / false values when a class moves to the next mission.
+
+window.PROJECT_LED_ACCESS = {
+  "801": { m1: true, m2: false, m3: false },
+  "802": { m1: true, m2: false, m3: false },
+  "803": { m1: true, m2: false, m3: false },
+  "804": { m1: true, m2: false, m3: false },
+  "805": { m1: true, m2: false, m3: false },
+  "806": { m1: true, m2: false, m3: false },
+  "807": { m1: true, m2: false, m3: false },
+  "808": { m1: true, m2: false, m3: false },
+  "809": { m1: true, m2: false, m3: false },
+  "810": { m1: true, m2: false, m3: false },
+  "811": { m1: true, m2: false, m3: false },
+  "812": { m1: true, m2: false, m3: false },
+  "813": { m1: true, m2: false, m3: false },
+  "814": { m1: true, m2: false, m3: false }
+};
