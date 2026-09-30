@@ -3,7 +3,7 @@
 // Edit only true / false values when a class moves to the next mission.
 
 window.PROJECT_LED_ACCESS = {
-  "801": { m1: true, m2: true, m3: false },
+  "801": { m1: true, m2: false, m3: false },
   "802": { m1: true, m2: false, m3: false },
   "803": { m1: true, m2: false, m3: false },
   "804": { m1: true, m2: false, m3: false },
