@@ -3,7 +3,7 @@ window.PROJECT_LED_ACCESS = {
     "m1": true,
     "m2": true,
     "m3": false,
-    "m4": false
+    "m4": true
   },
   "802": {
     "m1": true,
